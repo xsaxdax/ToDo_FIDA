@@ -18,10 +18,29 @@
         >
           <v-card>
             <v-card-text>
-              <v-text-field label="ToDo"></v-text-field>
+              <v-text-field  required :rules="nameRules" v-model="task" label="ToDo">
+              </v-text-field>
+            
+           <p> Please select a status </p> 
+               <v-radio-group v-model="taskStatus" mandatory row >
+     
+       <v-radio
+        label="ongoing"
+        value="ongoing"
+      ></v-radio>
+      <v-radio
+        label="complete"
+        value="complete"
+      ></v-radio>
+      <v-radio
+        label="overdue"
+        value="overdue"
+      ></v-radio>
+    </v-radio-group>  
+    <p> Please select a finishing date </p> 
                 <v-date-picker v-model="picker"></v-date-picker>
 
-              <small class="grey--text">* This doesn't actually save.</small>
+              
             </v-card-text>
 
             <v-card-actions>
@@ -29,14 +48,17 @@
 
               <v-btn
                 text
+                outlined
                 color="primary"
-                @click="dialog = false"
+                @click=" test(), submitForm()"
               >
                 Submit
-                {{reversedMessage}}
+                {{row}}
               </v-btn>
             </v-card-actions>
+            <small class="grey--text">* This doesn't actually save.</small>
           </v-card>
+          
         </v-dialog>
 
           <v-btn
@@ -63,24 +85,14 @@
  </div>
 </template>
 <script>
-import { onMounted } from 'vue';
-import {ToDoElement} from '../plugins/ToDoInterface';
-
-
 export default {
   name: "IndexPage",
-  
-  mounted(){
-  console.log(this.test);
-},
   data: () => ({
-   test: {
-      task: "test",
-      date: "test"
-    }, 
     dialog: false,
-    picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-   
+    picker: null, // (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+    task: null,
+    taskStatus: null,
+    taskObject: null,
     tags: [
       { task: "Work", status: "complete", date:"01.01.2020"},
       { task: "Work", status: "ongoing" , date:"01.01.2020"},
@@ -89,13 +101,60 @@ export default {
       { task: "Work", status: "ongoing" , date:"01.01.2020"},
       { task: "Work", status: "overdue" , date:"01.01.2020"},
     ],
-  }) /*,
- computed : {
-   reversedMessage: function () {
+    nameRules: [
+  v => !!v || 'Name is required',
+  v => (v && v.length <= 20) || 'Name must be less than 10 characters',
+],
+  }),
+
+  computed: {
+    currentTask(){
+      return  test={
+        date:this.reversedMessage2(),
+        task: this.task,
+        taskStatus: this.taskStatus    
+      }
+    }
+  },
+ 
+ methods : {
+  reversedMessage2: function () {
       // `this` points to the vm instance
       return  this.picker.substring(8,10) + "." +this.picker.substring(5,7) + "." + this.picker.substring(0,4)
+    },
+    submitForm () {
+    if (this.task!==null && this.picker){
+      this.dialog = false
     }
- } */
+    },
+    updateTaskObject () {
+      this.taskObject=localStorage.getItem("tasks")
+    },
+   test: function () {
+
+    if (localStorage.getItem("tasks") === null) {
+  console.log("no items")
+localStorage.setItem("tasks", JSON.stringify([]))
+}
+      // `this` points to the vm instance
+      
+      let task ={
+        date:this.reversedMessage2(),
+        task: this.task,
+        taskStatus: this.taskStatus
+      }
+    
+     
+          let array= JSON.parse(localStorage.getItem("tasks")) 
+          array.push(task)
+          this.updateTaskObject(),
+          //console.log(localStorage.getItem("tasks"))
+         // let x = localStorage.setItem("tasks", JSON.stringify(array))
+          console.log(this.taskObject)
+
+    }
+
+ }
 };
 </script>
 
@@ -113,5 +172,4 @@ export default {
 #chips-container .v-chip .v-checkbox {
   padding-left: 10px;
 }
-
 </style>
