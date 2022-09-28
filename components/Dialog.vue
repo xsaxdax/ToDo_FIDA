@@ -30,10 +30,7 @@
 
         <script>
     export default {
-  name: "Dialog",
-  props:{
-    dialog
-  }
+  name: "Dialog"
 }
 </script>
 

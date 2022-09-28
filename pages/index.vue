@@ -38,7 +38,7 @@
       ></v-radio>
     </v-radio-group>  
     <p> Please select a finishing date </p> 
-                <v-date-picker v-model="picker"></v-date-picker>
+                <v-date-picker required v-model="picker" active-picker="date"></v-date-picker>
 
               
             </v-card-text>
@@ -50,10 +50,10 @@
                 text
                 outlined
                 color="primary"
-                @click=" test(), submitForm()"
+                @click=" submitForm()"
               >
                 Submit
-                {{row}}
+              
               </v-btn>
             </v-card-actions>
             <small class="grey--text">* This doesn't actually save.</small>
@@ -75,7 +75,7 @@
       <div  id="chips-container" >
       
           <v-chip v-for="tag in tags" :key="tag" :class="tag.status">
-            {{ tag.task }}<br>{{tag.date}}</br>
+            {{ tag.task }}<br>{{tag.date}}<br>
             <v-checkbox ></v-checkbox>
             
           </v-chip>
@@ -120,12 +120,20 @@ export default {
  methods : {
   reversedMessage2: function () {
       // `this` points to the vm instance
-      return  this.picker.substring(8,10) + "." +this.picker.substring(5,7) + "." + this.picker.substring(0,4)
-    },
+      return  this.picker ?
+       this.picker.substring(8,10) + "." +this.picker.substring(5,7) + "." + this.picker.substring(0,4)
+        :null
+      },
     submitForm () {
-    if (this.task!==null && this.picker){
-      this.dialog = false
+    if (this.task && this.picker){
+      this.dialog = false 
+     
+      this.test()
     }
+    else{
+     
+    }
+    
     },
     updateTaskObject () {
       this.taskObject=localStorage.getItem("tasks")
@@ -146,11 +154,12 @@ localStorage.setItem("tasks", JSON.stringify([]))
     
      
           let array= JSON.parse(localStorage.getItem("tasks")) 
+       console.log(array)
           array.push(task)
-          this.updateTaskObject(),
+          //this.updateTaskObject(),
           //console.log(localStorage.getItem("tasks"))
-         // let x = localStorage.setItem("tasks", JSON.stringify(array))
-          console.log(this.taskObject)
+         localStorage.setItem("tasks", JSON.stringify(array))
+          //console.log(this.taskObject)
 
     }
 

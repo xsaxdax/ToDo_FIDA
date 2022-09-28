@@ -2,7 +2,7 @@
   <v-app dark>
   
     <v-app-bar
-      :clipped-left="clipped"
+      
       fixed
       app
     >
@@ -15,7 +15,7 @@
     </v-main>
     
     <v-footer
-      :absolute="!fixed"
+      
       app
     >
       <span>&copy; {{ new Date().getFullYear() }}</span>
