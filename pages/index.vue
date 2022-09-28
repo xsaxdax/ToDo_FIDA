@@ -1,14 +1,34 @@
 <template>
 <div>
 
-   <v-container fluid>
-      <v-row dense>
-        <v-col
-          v-for="(card, index) in tasks"
-          :key="card.index"
-          :cols="card.flex"
+  <v-container fluid >
+    <v-app-bar
+            flat
+            color="rgba(0, 0, 0, 0)"
+          >
+          <v-btn
+              fab
+              color="rgba(0, 0, 0, 0)"
+
+              @click="dialog = !dialog"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+           
+            <v-toolbar-title class="text-h6 white--text pl-0">
+              Add todo
+            </v-toolbar-title>
+            </v-app-bar>
+  
+      <v-row cols="12" no-gutters>
+        <v-col  id="card-container"  
+         sm="12" 
+         lg="4"
+        xl="2"
+        v-for="(card, index) in taskObjects"
+          :key="card.index"  :class="card.taskStatus"
         >
-          <v-card id="card-container"   :class="[mx-auto , card.taskStatus]" >
+          <v-card      >
             
             <v-card-title v-text="card.task"></v-card-title>
             <v-card-text  v-text="card.date"></v-card-text>
@@ -16,7 +36,7 @@
             <v-card-actions >
               <v-spacer></v-spacer>
 
-              <v-btn icon>
+              <v-btn @click="removeElement()" icon>
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
 
@@ -32,18 +52,10 @@
     </v-container>
 
  
- <v-btn
-              fab
-              color="cyan accent-2"
-              top
-              left
-              
-              @click="dialog = !dialog"
-            >
-              <v-icon>mdi-plus</v-icon>
-            </v-btn>
+ 
 
              <v-dialog
+            dark="true"
           v-model="dialog"
           max-width="500px"
         >
@@ -97,50 +109,21 @@
               
               </v-btn>
             </v-card-actions>
-            <small class="grey--text">* This doesn't actually save.</small>
+         
           </v-card>
           
         </v-dialog>
 
-          <v-btn
-              fab
-              color="cyan accent-2"
-              top
-              right
-           
-              @click="dialogDelete = !dialogDelete"
-            >
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
  
 
-            <v-row justify="center" xs=1>
-      <div  id="chips-container" >
         
-          
-          <v-chip v-for="(task, index) in taskObjects" :key="index" :class="task.taskStatus">
-            {{ task.task }}<br>{{task.date}}<br> 
-            <v-checkbox ></v-checkbox>
-           
   
-            <button v-on:click="removeElement(index)">remove</button>
-            <v-icon
-                        small
-                        class="mr-2"
-                        @click="removeElement(index)"
-                      >
-                        mdi-delete
-                      </v-icon>
-          </v-chip>
-      </div>    
-   </v-row>
-   <Testing/>
 
  </div>
 
 </template>
 <script>
-import Testing from "../components/testing.vue";
+
 export default {
     name: "IndexPage",
     mounted() {
@@ -153,8 +136,6 @@ export default {
         task: null,
         taskStatus: null,
         taskObjects: null,
-       
-      
         nameRules: [
             v => !!v || "Name is required",
             v => (v && v.length <= 20) || "Name must be less than 10 characters",
@@ -218,21 +199,27 @@ export default {
             //console.log(this.taskObject)
         }
     },
-    components: { Testing }
+    
 };
 </script>
 
 <style >
 
-#chips-container .v-chip.complete {
-  background: #3cd1c2;
-}
-#chips-container .v-chip.ongoing {
+#card-container.ongoing .v-sheet.v-card {
+  
   background: #ffaa2c;
 }
-#chips-container .v-chip.overdue {
+
+#card-container.complete .v-sheet.v-card {
+  
+  background:  #3cd1c2;
+}
+
+#card-container.overdue .v-sheet.v-card {
+  
   background: #f83e70;
 }
+
 
 #chips-container .v-chip .v-checkbox {
   padding-left: 10px;

@@ -76,8 +76,10 @@
 <style >
 
 
-#card-container.complete {
-    background: #3cd1c2;
+
+#card-container.ongoing .v-sheet.v-card {
+  
+    background: #ffaa2c;
 }
 
 #card-container.ongoing {
